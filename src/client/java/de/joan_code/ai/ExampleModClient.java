@@ -15,6 +15,8 @@ import java.util.Comparator;
 import net.minecraft.client.session.Session;
 import java.util.UUID;
 import net.minecraft.client.gui.screen.TitleScreen;
+import java.util.Optional;
+import net.minecraft.client.session.AccountType;
 
 public class ExampleModClient implements ClientModInitializer {
     @Override
@@ -71,7 +73,7 @@ public class ExampleModClient implements ClientModInitializer {
                         String newName = com.mojang.brigadier.arguments.StringArgumentType.getString(ctx, "name");
                         MinecraftClient mc = MinecraftClient.getInstance();
                         // set offline-mode session with new username
-                        mc.setSession(new Session(newName, UUID.randomUUID().toString(), "", "legacy"));
+                        mc.setSession(new Session(newName, UUID.randomUUID(), "", Optional.empty(), Optional.of(newName), AccountType.LEGACY));
                         mc.disconnect();
                         mc.setScreen(new TitleScreen());
                         return 1;
