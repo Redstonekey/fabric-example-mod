@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "com.example.mixin.client",
+	"package": "de.joan_code.ai.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"ExampleClientMixin"

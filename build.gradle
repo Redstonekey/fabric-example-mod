@@ -39,6 +39,8 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
+	// Client command API for v2 commands
+	modImplementation "net.fabricmc.fabric-api:fabric-command-api-v2:${project.fabric_version}"
 }
 
 processResources {
