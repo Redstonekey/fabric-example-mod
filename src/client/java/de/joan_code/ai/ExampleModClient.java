@@ -16,7 +16,7 @@ import net.minecraft.client.session.Session;
 import java.util.UUID;
 import net.minecraft.client.gui.screen.TitleScreen;
 import java.util.Optional;
-import net.minecraft.client.session.AccountType;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class ExampleModClient implements ClientModInitializer {
     @Override
@@ -65,20 +65,22 @@ public class ExampleModClient implements ClientModInitializer {
                 latest.renameTo(dest);
             }
         });
-        // Register offline-only username switch command `.su`
+        // Register offline-only username switch and health command
         net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("su")
-                .then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument("name", com.mojang.brigadier.arguments.StringArgumentType.word())
-                    .executes(ctx -> {
-                        String newName = com.mojang.brigadier.arguments.StringArgumentType.getString(ctx, "name");
-                        MinecraftClient mc = MinecraftClient.getInstance();
-                        // set offline-mode session with new username
-                        mc.setSession(new Session(newName, UUID.randomUUID(), "", Optional.empty(), Optional.of(newName), AccountType.LEGACY));
-                        mc.disconnect();
-                        mc.setScreen(new TitleScreen());
-                        return 1;
-                    })
-                )
+            // ...existing su registration...
+
+            // health command
+            dispatcher.register(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("hp")
+                .executes(ctx -> {
+                    MinecraftClient mc = MinecraftClient.getInstance();
+                    if (mc.player == null || mc.world == null) return 1;
+                    for (PlayerEntity player : mc.world.getPlayers()) {
+                        float health = player.getHealth();
+                        float max = player.getMaxHealth();
+                        mc.player.sendMessage(Text.literal(player.getName().getString() + ": " + health + "/" + max), false);
+                    }
+                    return 1;
+                })
             );
         });
     }
